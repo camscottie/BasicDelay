@@ -27,7 +27,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-PluginEditor::PluginEditor ()
+BasicDelayAudioProcessorEditor::BasicDelayAudioProcessorEditor (BasicDelayAudioProcessor& p)
+    : AudioProcessorEditor(p), processor(p)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -43,7 +44,7 @@ PluginEditor::PluginEditor ()
     //[/Constructor]
 }
 
-PluginEditor::~PluginEditor()
+BasicDelayAudioProcessorEditor::~BasicDelayAudioProcessorEditor()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
@@ -55,7 +56,7 @@ PluginEditor::~PluginEditor()
 }
 
 //==============================================================================
-void PluginEditor::paint (Graphics& g)
+void BasicDelayAudioProcessorEditor::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -66,7 +67,7 @@ void PluginEditor::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void PluginEditor::resized()
+void BasicDelayAudioProcessorEditor::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -90,8 +91,9 @@ void PluginEditor::resized()
 
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="PluginEditor" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
+<JUCER_COMPONENT documentType="Component" className="BasicDelayAudioProcessorEditor"
+                 componentName="" parentClasses="public AudioProcessorEditor, public Timer"
+                 constructorParams="BasicDelayAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor(p), processor(p)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>

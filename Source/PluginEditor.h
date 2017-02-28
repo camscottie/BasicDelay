@@ -17,8 +17,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_F1B68972952BE4__
-#define __JUCE_HEADER_F1B68972952BE4__
+#ifndef __JUCE_HEADER_B239480082FFF0E4__
+#define __JUCE_HEADER_B239480082FFF0E4__
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
@@ -34,12 +34,13 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class PluginEditor  : public Component
+class BasicDelayAudioProcessorEditor  : public AudioProcessorEditor,
+                                        public Timer
 {
 public:
     //==============================================================================
-    PluginEditor ();
-    ~PluginEditor();
+    BasicDelayAudioProcessorEditor (BasicDelayAudioProcessor& p);
+    ~BasicDelayAudioProcessorEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -58,10 +59,10 @@ private:
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BasicDelayAudioProcessorEditor)
 };
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_F1B68972952BE4__
+#endif   // __JUCE_HEADER_B239480082FFF0E4__
