@@ -41,6 +41,10 @@ BasicDelayAudioProcessorEditor::BasicDelayAudioProcessorEditor (BasicDelayAudioP
 
 
     //[Constructor] You can add your own custom stuff here..
+	
+		//Starts the Timer every 200ms
+		startTimer(200);
+
     //[/Constructor]
 }
 
@@ -79,6 +83,12 @@ void BasicDelayAudioProcessorEditor::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+	void BasicDelayAudioProcessorEditor::timerCallback()
+	{
+		//Exchange specific data between UI elements and Plugin "ourprocessor"
+	}
+
 //[/MiscUserCode]
 
 
