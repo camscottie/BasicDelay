@@ -56,9 +56,38 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+		// M Y  P U B L I C   V A R I A B L E S 
+		
+			// 
+			float feedback;
+		
+			//
+			float delayTime;
+
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BasicDelayAudioProcessor)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BasicDelayAudioProcessor)
+
+		// M Y  P R I V A T E   V A R I A B L E S 
+			
+			// The type 'AudioSampleBuffer' provides the functionality of a biasci audio buffer
+			// This is specifically used for a circular buffer here
+			AudioSampleBuffer delayBuffer;
+				/* DEFINITION - AudioSampleBuffer
+				A multi-channel buffer of 32-bit floating point audio samples.
+				This typedef is here for backwards compatibility with the older AudioSampleBuffer class, 
+				which was fixed for 32-bit data, but is otherwise the same as the new templated AudioBuffer class.
+				*/
+			
+			// Determines the size of the Delay Buffer
+			int delayBufferLength;
+
+			// Determines the position in the buffer to read a sample from
+			int readIndex;
+
+			// Determines the position in the buffer to write a sample to
+			int writeIndex;
+		
 };
 
 

@@ -25,6 +25,10 @@ BasicDelayAudioProcessor::BasicDelayAudioProcessor()
                        )
 #endif
 {
+	// Some Feedback
+	feedback = 0.5;
+
+
 }
 
 BasicDelayAudioProcessor::~BasicDelayAudioProcessor()
