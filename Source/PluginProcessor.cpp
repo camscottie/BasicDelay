@@ -197,14 +197,48 @@ void BasicDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        float* channelData = buffer.getWritePointer (channel);
+		// L A B  5   C O D E
 
-        // ..do something to the data...
-    }
+			// S T A R T U P   C O D E
+
+				// 1. channelData = an array which contains audio for one channel
+				// 2. channelData's length is defined by the numSamples variable.
+				float *channelData = buffer.getWritePointer(0);
+
+				// 1. delayData is a circular buffer
+				// 2. delayData is for implementing the delay
+				float *delayData = delayBuffer.getWritePointer(0);
+
+				// 1. Set a wet mix level
+				float wetMix = 0.5;
+
+			// M A I N   P R O C E S S O R  L O O P
+			for (int i = 0; i < buffer.getNumSamples(); ++i)
+			{
+				// 1. Calculate the next output sample
+				// 2. This is calculated as: 
+				// 3. (Current input sample + delayed version)
+				float outputSample = (channelData[i] + (wetMix * delayData[readIndex]));
+
+				// 1. Write the current input into the delay buffer
+				// 2. AND write the delayed sample into the delay buffer
+				delayData[writeIndex] = channelData[i] + (wetMix * delayData[readIndex] * feedback)
+
+				// 1. Increment the readIndex
+				// 2. Check to see if readIndex greater than the buffer length
+				// 3. If readIndex > the buffer length
+				// 4. Change readIndex back to zero
+				if (++readIndex >= delayBufferLength)
+					readIndex = 0;
+
+				// 1. Do the same with the writeIndex
+				if (++writeIndex >= delayBufferLength)
+					writeIndex = 0;
+
+				// 1. Assign output sample computed above to the output buffer
+				channelData[i] = outputSample;
+				
+			}
 }
 
 //==============================================================================
