@@ -25,8 +25,26 @@ BasicDelayAudioProcessor::BasicDelayAudioProcessor()
                        )
 #endif
 {
-	// Some Feedback
-	feedback = 0.5;
+	// L A B  5   C O D E 
+
+	/* The code below assigns default values to the variables defined in PluginProcessor.h
+	   This is done to encourage good practice of assigning variables for program startup.
+	*/
+
+		// Some Feedback
+		feedback = 0.5;
+
+		//Delay of 0.2 seconds
+		delayTime = 0.25;
+
+		//Start reading from the start of the circular buffer
+		readIndex = 0;
+
+		//Set the writeIndex ahead of the read index, using the delayTime variable
+		writeIndex = delayTime;
+
+		//Initial delay buffer size
+		delayBufferLength = 0;
 
 
 }
@@ -90,9 +108,49 @@ void BasicDelayAudioProcessor::changeProgramName (int index, const String& newNa
 
 //==============================================================================
 void BasicDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+	/* This function is called before the playback starts,
+	   The Sample rate is also set */
+
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+	
+	// L A B  5   C O D E 
+
+		// Maximum delay of 1 second
+		delayBufferLength = (int)(sampleRate);
+
+			/* The (int)(Variable) syntax is known as casting
+			   Casting is converting a variables type to another
+			   In the above case, a double is changed to an int.
+
+			   Another method of casting can be written as:		(Shown to me by Ollie)
+			   int x;
+			   x = static_cast<int>(sampleRate);   */   
+
+		
+		//Set the buffer to 1 channel of the size of delayBufferLength using setSize
+		delayBuffer.setSize(1, delayBufferLength); 
+
+		//Set all the samples in the buffer to zero
+		delayBuffer.clear();
+
+		// Calculate the position of the read index, by looking at the write index position
+		// (This is the delay sample buffer size)
+		readIndex = (int)(writeIndex - (delayTime * delayBufferLength) + delayBufferLength) % delayBufferLength;
+
+			/* Variables used in the above equation:
+					writeIndex = delayTime = 0.25
+					delayTime = 0.25
+					delayBufferLength = Sample Rate
+
+			   The above equation is stating that in this function (prepareToPlay):
+					(int) - Cast the result as an int
+					(0.25 - (0.25 * sampleRate) + sampleRate)
+					remainder sampleRate
+
+			*/
+
+						
+			
 }
 
 void BasicDelayAudioProcessor::releaseResources()
