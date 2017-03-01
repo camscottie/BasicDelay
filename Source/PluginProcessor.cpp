@@ -137,7 +137,10 @@ void BasicDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 		// (This is the delay sample buffer size)
 		readIndex = (int)(writeIndex - (delayTime * delayBufferLength) + delayBufferLength) % delayBufferLength;
 
-			/* Variables used in the above equation:
+			/*  This equation ensures that the readIndex is kept within the range between 0 and the end of the cicular buffer.
+				This is done by using the modulus operator.
+
+				Variables used in the above equation:
 					writeIndex = delayTime = 0.25
 					delayTime = 0.25
 					delayBufferLength = Sample Rate
