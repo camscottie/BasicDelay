@@ -225,7 +225,7 @@ void BasicDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 
 				// 1. Write the current input into the delay buffer
 				// 2. AND write the delayed sample into the delay buffer
-				delayData[writeIndex] = channelData[i] + (wetMix * delayData[readIndex] * feedback)
+				delayData[writeIndex] = channelData[i] + (wetMix * delayData[readIndex] * feedback);
 
 				// 1. Increment the readIndex
 				// 2. Check to see if readIndex greater than the buffer length
