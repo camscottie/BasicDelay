@@ -128,6 +128,17 @@ const String BasicDelayAudioProcessor::getName() const
 		return String::empty;
 	}
 
+	// 1. getParameterText returns a String value
+	// 2. The string value is displayed in the plugin and as an automation value in the hosting DAW
+	const String BasicDelayAudioProcessor::getParameterText(int index)
+	{
+		
+		return String(getParameter(index), 2);
+
+		//3. If the value is scaled outwith the values of 0 and 1
+		//4. Values can be set that make more sense to the user.
+	}
+
 // L A B  5   C O D E
 
 bool BasicDelayAudioProcessor::acceptsMidi() const
