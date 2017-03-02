@@ -59,6 +59,52 @@ const String BasicDelayAudioProcessor::getName() const
     return JucePlugin_Name;
 }
 
+// L A B  5   C O D E 
+	int BasicDelayAudioProcessor::getNumParameters()
+	{
+		return kNumParameters;
+	}
+
+	// 1. The getParameter function returns the value associated with the UI created in JUCE
+	// 2. This information is time-critical, so it is important not to include any code that may stop the program.
+	// 3. Doing sowill prevent the audio from playing.
+	float BasicDelayAudioProcessor::getParameter(int index)
+	{
+		switch(index)
+		{
+			case kDelayTimeParam:
+				return delayTime;
+		
+			case kFeedbackParam:
+				return feedback;
+
+			default:
+				return 0.0f;
+		}
+	}
+
+	void BasicDelayAudioProcessor::setParameter (int index, float newValue)
+	{
+		switch (index)
+		{
+		case kDelayTimeParam:
+			delayTime = newValue;
+
+			readIndex = (int)(writeIndex - (delayTime * delayBufferLength)
+				+ delayBufferLength) % delayBufferLength;
+			break;
+
+		case kFeedbackParam:
+			feedback = newValue;
+			break;
+		default:
+			break;
+		}
+	}
+
+
+// L A B  5   C O D E
+
 bool BasicDelayAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
