@@ -83,25 +83,50 @@ const String BasicDelayAudioProcessor::getName() const
 		}
 	}
 
+	/*This function is called by the host DAW when it wants to set a specific value in the processor.
+		A switch case statement is used to determine which parameter is going to be set with
+			the value from the slider in the user interface.
+		If kDelayTimeParam is selected as the case then the value will be assigned to delayTime in the processor class.Also,
+			readIndex needs to be updated because delayTime has changed.*/
 	void BasicDelayAudioProcessor::setParameter (int index, float newValue)
 	{
 		switch (index)
 		{
-		case kDelayTimeParam:
-			delayTime = newValue;
+		
+			case kDelayTimeParam:
+				delayTime = newValue;
 
-			readIndex = (int)(writeIndex - (delayTime * delayBufferLength)
-				+ delayBufferLength) % delayBufferLength;
-			break;
+				readIndex = (int)(writeIndex - (delayTime * delayBufferLength)
+					+ delayBufferLength) % delayBufferLength;
+				break;
 
-		case kFeedbackParam:
-			feedback = newValue;
-			break;
-		default:
-			break;
+			case kFeedbackParam:
+				feedback = newValue;
+				break;
+		
+			default:
+				break;
+		
 		}
 	}
 
+	// 1. This function is used to assign a text string to the plugins parameter
+	// 2. The text string appears in the parameter list in the host DAW, for use of automation
+	const String BasicDelayAudioProcessor::getParameterName(int index)
+	{
+		switch (index)
+		{
+			case kDelayTimeParam:
+				return "return time";
+
+			case kFeedbackParam:
+				return "feedback";
+
+			default:
+				break;
+		}
+		return String::empty;
+	}
 
 // L A B  5   C O D E
 
