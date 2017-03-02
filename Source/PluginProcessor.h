@@ -58,11 +58,34 @@ public:
 
 		// M Y  P U B L I C   V A R I A B L E S 
 		
-			// 
+			//enumerator for the parameter functions
+			enum Parameters
+			{
+				kDelayTimeParam = 0,   // 0
+				kFeedbackParam,		   // 1
+				kNumParameters		   // 2
+			};
+			
+			// Determines how loud the sound feeds back
 			float feedback;
 		
-			//
+			// Determines the 
 			float delayTime;
+
+			//
+			int getNumParamenters();
+
+			//
+			float getParameter(int index);
+
+			//
+			void setParameter(int index, float newValue);
+
+			//
+			const String getParameterName(int index);
+
+			//
+			const String getParameterText(int index);
 
 private:
     //==============================================================================
