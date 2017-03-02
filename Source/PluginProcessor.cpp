@@ -25,6 +25,28 @@ BasicDelayAudioProcessor::BasicDelayAudioProcessor()
                        )
 #endif
 {
+	// L A B  5   C O D E 
+
+	/* The code below assigns default values to the variables defined in PluginProcessor.h
+	   This is done to encourage good practice of assigning variables for program startup.
+	*/
+
+		// Some Feedback
+		feedback = 0.5;
+
+		//Delay of 0.2 seconds
+		delayTime = 0.25;
+
+		//Start reading from the start of the circular buffer
+		readIndex = 0;
+
+		//Set the writeIndex ahead of the read index, using the delayTime variable
+		writeIndex = delayTime;
+
+		//Initial delay buffer size
+		delayBufferLength = 0;
+
+
 }
 
 BasicDelayAudioProcessor::~BasicDelayAudioProcessor()
@@ -86,9 +108,52 @@ void BasicDelayAudioProcessor::changeProgramName (int index, const String& newNa
 
 //==============================================================================
 void BasicDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+	/* This function is called before the playback starts,
+	   The Sample rate is also set */
+
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+	
+	// L A B  5   C O D E 
+
+		// Maximum delay of 1 second
+		delayBufferLength = (int)(sampleRate);
+
+			/* The (int)(Variable) syntax is known as casting
+			   Casting is converting a variables type to another
+			   In the above case, a double is changed to an int.
+
+			   Another method of casting can be written as:		(Shown to me by Ollie)
+			   int x;
+			   x = static_cast<int>(sampleRate);   */   
+
+		
+		//Set the buffer to 1 channel of the size of delayBufferLength using setSize
+		delayBuffer.setSize(1, delayBufferLength); 
+
+		//Set all the samples in the buffer to zero
+		delayBuffer.clear();
+
+		// Calculate the position of the read index, by looking at the write index position
+		// (This is the delay sample buffer size)
+		readIndex = (int)(writeIndex - (delayTime * delayBufferLength) + delayBufferLength) % delayBufferLength;
+
+			/*  This equation ensures that the readIndex is kept within the range between 0 and the end of the cicular buffer.
+				This is done by using the modulus operator.
+
+				Variables used in the above equation:
+					writeIndex = delayTime = 0.25
+					delayTime = 0.25
+					delayBufferLength = Sample Rate
+
+			   The above equation is stating that in this function (prepareToPlay):
+					(int) - Cast the result as an int
+					(0.25 - (0.25 * sampleRate) + sampleRate)
+					remainder sampleRate
+
+			*/
+
+						
+			
 }
 
 void BasicDelayAudioProcessor::releaseResources()
@@ -135,14 +200,48 @@ void BasicDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        float* channelData = buffer.getWritePointer (channel);
+		// L A B  5   C O D E
 
-        // ..do something to the data...
-    }
+			// S T A R T U P   C O D E
+
+				// 1. channelData = an array which contains audio for one channel
+				// 2. channelData's length is defined by the numSamples variable.
+				float *channelData = buffer.getWritePointer(0);
+
+				// 1. delayData is a circular buffer
+				// 2. delayData is for implementing the delay
+				float *delayData = delayBuffer.getWritePointer(0);
+
+				// 1. Set a wet mix level
+				float wetMix = 0.5;
+
+			// M A I N   P R O C E S S O R  L O O P
+			for (int i = 0; i < buffer.getNumSamples(); ++i)
+			{
+				// 1. Calculate the next output sample
+				// 2. This is calculated as: 
+				// 3. (Current input sample + delayed version)
+				float outputSample = (channelData[i] + (wetMix * delayData[readIndex]));
+
+				// 1. Write the current input into the delay buffer
+				// 2. AND write the delayed sample into the delay buffer
+				delayData[writeIndex] = channelData[i] + (wetMix * delayData[readIndex] * feedback);
+
+				// 1. Increment the readIndex
+				// 2. Check to see if readIndex greater than the buffer length
+				// 3. If readIndex > the buffer length
+				// 4. Change readIndex back to zero
+				if (++readIndex >= delayBufferLength)
+					readIndex = 0;
+
+				// 1. Do the same with the writeIndex
+				if (++writeIndex >= delayBufferLength)
+					writeIndex = 0;
+
+				// 1. Assign output sample computed above to the output buffer
+				channelData[i] = outputSample;
+				
+			}
 }
 
 //==============================================================================
