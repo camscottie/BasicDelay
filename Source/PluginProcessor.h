@@ -75,7 +75,7 @@ public:
 				// 1. This group of functions are already part of the JUCE class structure
 				// 2. Here we are overriding these functions so we can take control of these variables
 				// 3. The same parameter types must be defined in the brackets to override pre-written functions
-				int getNumParamenters();
+				int getNumParameters();
 
 				float getParameter(int index);
 

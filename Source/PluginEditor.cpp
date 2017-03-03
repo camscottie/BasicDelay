@@ -124,11 +124,26 @@ void BasicDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMo
     if (sliderThatWasMoved == sliderDelayTime)
     {
         //[UserSliderCode_sliderDelayTime] -- add your slider handling code here..
-        //[/UserSliderCode_sliderDelayTime]
+
+		// 1. Enables our kDelayTimeParam variable to be passed to processor class.
+		// 2. setParameterNotifying Host is used to communicate to the host DAW that the value has changed
+		// 3. This allows parameter automation to be recorded in the host DAW.
+			processor.setParameterNotifyingHost(
+			BasicDelayAudioProcessor::kDelayTimeParam,
+			(float)sliderDelayTime->getValue());
+        
+		//[/UserSliderCode_sliderDelayTime]
     }
     else if (sliderThatWasMoved == sliderFeedback)
     {
         //[UserSliderCode_sliderFeedback] -- add your slider handling code here..
+
+			//1. The same process as sliderDelayTime
+			processor.setParameterNotifyingHost
+			(BasicDelayAudioProcessor::kFeedbackParam,
+			(float)sliderFeedback->getValue());
+
+
         //[/UserSliderCode_sliderFeedback]
     }
 
@@ -142,7 +157,9 @@ void BasicDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMo
 
 	void BasicDelayAudioProcessorEditor::timerCallback()
 	{
-		//Exchange specific data between UI elements and Plugin "ourprocessor"
+		// 1. Exchange specific data between UI elements and Plugin "ourprocessor"
+		sliderDelayTime->setValue(processor.delayTime, dontSendNotification);
+		sliderFeedback->setValue(processor.feedback, dontSendNotification);
 	}
 
 //[/MiscUserCode]
