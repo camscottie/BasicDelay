@@ -59,6 +59,88 @@ const String BasicDelayAudioProcessor::getName() const
     return JucePlugin_Name;
 }
 
+// L A B  5   C O D E 
+	int BasicDelayAudioProcessor::getNumParameters()
+	{
+		return kNumParameters;
+	}
+
+	// 1. The getParameter function returns the value associated with the UI created in JUCE
+	// 2. This information is time-critical, so it is important not to include any code that may stop the program.
+	// 3. Doing sowill prevent the audio from playing.
+	float BasicDelayAudioProcessor::getParameter(int index)
+	{
+		switch(index)
+		{
+			case kDelayTimeParam:
+				return delayTime;
+		
+			case kFeedbackParam:
+				return feedback;
+
+			default:
+				return 0.0f;
+		}
+	}
+
+	/*This function is called by the host DAW when it wants to set a specific value in the processor.
+		A switch case statement is used to determine which parameter is going to be set with
+			the value from the slider in the user interface.
+		If kDelayTimeParam is selected as the case then the value will be assigned to delayTime in the processor class.Also,
+			readIndex needs to be updated because delayTime has changed.*/
+	void BasicDelayAudioProcessor::setParameter (int index, float newValue)
+	{
+		switch (index)
+		{
+		
+			case kDelayTimeParam:
+				delayTime = newValue;
+
+				readIndex = (int)(writeIndex - (delayTime * delayBufferLength)
+					+ delayBufferLength) % delayBufferLength;
+				break;
+
+			case kFeedbackParam:
+				feedback = newValue;
+				break;
+		
+			default:
+				break;
+		
+		}
+	}
+
+	// 1. This function is used to assign a text string to the plugins parameter
+	// 2. The text string appears in the parameter list in the host DAW, for use of automation
+	const String BasicDelayAudioProcessor::getParameterName(int index)
+	{
+		switch (index)
+		{
+			case kDelayTimeParam:
+				return "return time";
+
+			case kFeedbackParam:
+				return "feedback";
+
+			default:
+				break;
+		}
+		return String::empty;
+	}
+
+	// 1. getParameterText returns a String value
+	// 2. The string value is displayed in the plugin and as an automation value in the hosting DAW
+	const String BasicDelayAudioProcessor::getParameterText(int index)
+	{
+		
+		return String(getParameter(index), 2);
+
+		//3. If the value is scaled outwith the values of 0 and 1
+		//4. Values can be set that make more sense to the user.
+	}
+
+// L A B  5   C O D E
+
 bool BasicDelayAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
